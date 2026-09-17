@@ -1,0 +1,1 @@
+Git Lab 2 - Working with Staging Area
