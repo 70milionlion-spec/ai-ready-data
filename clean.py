@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 
 
 def load_csv(file_path):
@@ -13,5 +14,24 @@ def map_label(label):
         3: "critical",
     }
     return labels.get(label, "unknown")
+
+
 def handle_missing_values(data):
     return data.fillna(0)
+
+
+def normalize_columns(data):
+    data = data.copy()
+
+    normalized_columns = [
+        re.sub(r"[^a-zA-Z0-9]+", "_", str(column)).strip("_").lower()
+        for column in data.columns
+    ]
+
+    if len(normalized_columns) != len(set(normalized_columns)):
+        raise ValueError("Duplicate column names after normalization")
+
+    # Replace non-alphanumeric characters with underscores and convert names to lowercase.
+    data.columns = normalized_columns
+    return data
+
