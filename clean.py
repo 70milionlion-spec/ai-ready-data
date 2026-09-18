@@ -13,3 +13,5 @@ def map_label(label):
         3: "critical",
     }
     return labels.get(label, "unknown")
+def handle_missing_values(data):
+    return data.fillna(0)
