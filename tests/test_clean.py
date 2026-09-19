@@ -1,4 +1,5 @@
 import pandas as pd
+from clean import handle_missing_values
 
 from clean import normalize_columns
 
@@ -34,3 +35,10 @@ def test_normalize_columns_rejects_duplicate_names():
         assert False, "Expected ValueError for duplicate normalized columns"
     except ValueError:
         pass
+
+
+
+def test_handle_missing_values_drop():
+  df = pd.DataFrame({"A": [1, 2, None], "B": [4, None, 6]})
+  cleaned = handle_missing_values(df)
+  assert len(cleaned) == 1
