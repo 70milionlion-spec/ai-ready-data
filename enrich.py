@@ -3,6 +3,12 @@ import pandas as pd
 import numpy as np
 from clean import handle_missing_values, map_label, normalize_columns
 
+# الثوابت والأرقام السحرية المسماة بوضوح (DRY / KISS)
+TAX_RATE = 0.05
+HIGH_VALUE_THRESHOLD = 1000
+OUTLIER_SIGMA = 2
+REGION_CODES = {"US": 1, "EU": 2, "AP": 3}
+
 
 def gross_amount(units, price):
   return units * price
@@ -12,13 +18,12 @@ def discount_amount(gross, percent):
   return gross * percent
 
 
-def tax_amount(net, charge_tax=0.0):
+def tax_amount(net, charge_tax=TAX_RATE):
   return net * charge_tax
 
 
 def region_code(name):
-  codes = {"US": 1, "EU": 2, "AP": 3}
-  return codes.get(name, 0)
+  return REGION_CODES.get(name, 0)
 
 
 def read_table(path):
@@ -31,8 +36,13 @@ def write_table(header, rows, path):
   df.to_csv(path, index=False)
 
 
-def column_index(header, name):
-  return header.index(name) if name in header else -1
+def cell_as_number(row, index, default=0.0):
+  # التعامل الآمن مع الاستثناءات الدقيقة بدلاً من الاستثناء الأعمى (DRY)
+  try:
+    val = row[index]
+    return float(val) if pd.notna(val) else default
+  except (ValueError, IndexError, TypeError):
+    return default
 
 
 def outlier_threshold(values):
@@ -41,7 +51,7 @@ def outlier_threshold(values):
   return mean, deviation
 
 
-def is_outlier(value, mean, deviation, threshold=3):
+def is_outlier(value, mean, deviation, threshold=OUTLIER_SIGMA):
   if deviation == 0:
     return False
   return abs(value - mean) > (threshold * deviation)
