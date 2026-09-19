@@ -1,1 +1,5 @@
-import pandas as pdimport re# الثوابت المعيارية الجديدةTAX_RATE = 0.05HIGH_VALUE_THRESHOLD = 1000REGION_CODES = ["US", "EU", "AP"]missing_strategy = "drop"def read_table(input_path):  # قراءة الجدول من المسار المحدد  table = pd.read_csv(input_path)  return tabledef map_label(label):  labels = {      0: "low",      1: "medium",      2: "high",      3: "critical",  }  return labels.get(label, "unknown")def handle_missing_values(data):  if missing_strategy == "drop":    return data.dropna()  return data.fillna(0)def normalize_columns(data):  data = data.copy()  normalized_columns = [      re.sub(r"[^a-zA-Z0-9]+", "_", str(column)).strip("_").lower()      for column in data.columns  ]  if len(normalized_columns) != len(set(normalized_columns)):    raise ValueError("Duplicate column names after normalization")  data.columns = normalized_columns  return data
+"""Backward-compatible imports for the analyzer logic layer."""
+
+from src.analyzer.logic import handle_missing_values, map_label, normalize_columns
+
+__all__ = ["handle_missing_values", "map_label", "normalize_columns"]
