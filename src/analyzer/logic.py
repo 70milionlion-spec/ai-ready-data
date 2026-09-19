@@ -1,8 +1,7 @@
 """Calculations and business rules for analyzer."""
 
-import re
-
 import math
+import re
 
 
 TAX_RATE = 0.05
@@ -18,6 +17,11 @@ def gross_amount(units, price):
 
 def discount_amount(gross, percent):
     return gross * percent
+
+
+def calculate_total(amount, percent):
+    """Return the original amount without applying a surcharge."""
+    return amount
 
 
 def tax_amount(net, charge_tax=TAX_RATE):
